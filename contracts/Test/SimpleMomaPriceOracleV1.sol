@@ -20,8 +20,6 @@ contract SimpleMomaPriceOracleV1 {
         REPORTER   /// implies the price is set by the reporter
     }
 
-    /// @dev Describe how the USD price should be determined for an asset.
-    ///  There should be 1 TokenConfig object for each supported asset, passed in the constructor.
     struct TokenConfig {
         ChainlinkOracleInterface underlyingAssetOracle;
         uint256 baseUnit;
@@ -29,32 +27,43 @@ contract SimpleMomaPriceOracleV1 {
         uint256 fixedPrice;
     }
 
-    mapping(address => ChainlinkOracleInterface) public prices;
+    struct MUnderlyingConfig {
+        address underlying;
+        bool isETH;
+        bool isBuilt;
+    }
+
+    mapping(address => MUnderlyingConfig) public mUnderlying;
     mapping(address => TokenConfig) public tokenConfigs;
+    mapping(address => address) public underlyingTokenOracle;
+
     ChainlinkOracleInterface public ethOracle;
     uint public constant ethBaseUnit = 1e18;
-    /**
-     * @param guardian_ The address of the guardian, which may set the new price oracle
-     * @param mToken_ The address of mToken list
-     * @param mTokenOracle_ The address of mToken underlying token's chainlink oracle
-     */
+    uint public constant ethFixedPrice = 1e18;
+
     constructor(
-            address guardian_,
-            ChainlinkOracleInterface ethOracle_,
-            address[] memory mToken_, 
-            address[] memory mTokenOracle_, 
-            uint256[] memory baseUnits_, 
-            PriceSource[] memory priceSources_, 
-            uint256[] memory fixedPrices_
-        ) public {
+        address guardian_,
+        ChainlinkOracleInterface ethOracle_,
+        address[] memory mTokens_,
+        address[] memory underlyings_,
+        bool[] memory isETHs_,
+        address[] memory mTokenOracles_, 
+        uint256[] memory baseUnits_, 
+        PriceSource[] memory priceSources_, 
+        uint256[] memory fixedPrices_
+    ) {
         guardian = guardian_;
         ethOracle = ethOracle_;
-        for (uint i = 0; i < mToken_.length; i++) {
-            tokenConfigs[mToken_[i]] = TokenConfig({
-                underlyingAssetOracle: ChainlinkOracleInterface(mTokenOracle_[i]),
+        for (uint i = 0; i < mTokens_.length; i++) {
+            tokenConfigs[underlyings_[i]] = TokenConfig({
+                underlyingAssetOracle: ChainlinkOracleInterface(mTokenOracles_[i]),
                 baseUnit: baseUnits_[i],
                 priceSource: priceSources_[i],
                 fixedPrice: fixedPrices_[i]
+            });
+            mUnderlying[mTokens_[i]] = MUnderlyingConfig({underlying: underlyings_[i], 
+                isETH: isETHs_[i], 
+                isBuilt: true
             });
         }
     }
@@ -65,9 +74,28 @@ contract SimpleMomaPriceOracleV1 {
      * @return The underlying asset price mantissa (scaled by 1e18)
      */
     function assetPrices(address mToken) public view returns (uint) {
-        TokenConfig memory tokenConfig = tokenConfigs[mToken];
+        MUnderlyingConfig memory targetPair = mUnderlying[mToken];
+        require(targetPair.isBuilt, "Not Support");
+        if (targetPair.isETH) {
+            (,int256 ethPrice,,,) = ethOracle.latestRoundData();
+            uint usdPerEth = uint(ethPrice);
+            require(usdPerEth > 0, "ETH price not set, cannot convert to dollars");
+            uint targetPrice = mul(usdPerEth, ethFixedPrice) / ethBaseUnit;
+            return (mul(1e28, targetPrice)) / ethBaseUnit;
+        }
+        TokenConfig memory tokenConfig = tokenConfigs[targetPair.underlying];
         // USDC、USDT 1e8
         return (mul(1e28, priceInternal(tokenConfig)) / tokenConfig.baseUnit);
+    }
+
+    // price 1e8
+    function getPrice(address underlyingAsset) public view returns(uint) {
+        ChainlinkOracleInterface targetOracle = ChainlinkOracleInterface(underlyingTokenOracle[underlyingAsset]);
+        require(targetOracle != ChainlinkOracleInterface(address(0)), "Not Supported");
+        (,int256 price,,,) = targetOracle.latestRoundData();
+        require(price >= 0, "Invalid price");
+        uint assetPrice = uint(price);
+        return assetPrice;
     }
 
     function priceInternal(TokenConfig memory tokenConfig) internal view returns (uint) {
@@ -89,18 +117,30 @@ contract SimpleMomaPriceOracleV1 {
     }
 
     function setNewOracle(
-            address mToken_, 
-            address mTokenOracle_, 
+            address oracle_,
+            address underlying_,
             uint256 baseUnit_, 
             PriceSource priceSource_, 
             uint256 fixedPrice_
         ) public {
         require(msg.sender == guardian, "Only guardian may add new price oracle");
-        tokenConfigs[mToken_] = TokenConfig({
-                underlyingAssetOracle: ChainlinkOracleInterface(mTokenOracle_),
+        tokenConfigs[underlying_] = TokenConfig({
+                underlyingAssetOracle: ChainlinkOracleInterface(oracle_),
                 baseUnit: baseUnit_,
                 priceSource: priceSource_,
                 fixedPrice: fixedPrice_
+        });
+    }
+
+    function setNewMUnderlying(
+            address mToken,
+            address underlying_,
+            bool isETH_
+        ) public {
+        require(msg.sender == guardian, "Only guardian may add new mToken Underlying Pair");
+        mUnderlying[mToken] = MUnderlyingConfig({underlying: underlying_, 
+                isETH: isETH_, 
+                isBuilt: true
         });
     }
 
