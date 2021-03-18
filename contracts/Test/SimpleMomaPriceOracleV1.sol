@@ -48,9 +48,7 @@ contract SimpleMomaPriceOracleV1 {
     constructor(
         address guardian_,
         ChainlinkOracleInterface ethOracle_,
-        address[] memory mTokens_,
         address[] memory underlyings_,
-        bool[] memory isETHs_,
         address[] memory mTokenOracles_, 
         uint256[] memory baseUnits_, 
         PriceSource[] memory priceSources_, 
@@ -59,16 +57,12 @@ contract SimpleMomaPriceOracleV1 {
         // USDC、USDT 1e8
         guardian = guardian_;
         ethOracle = ethOracle_;
-        for (uint i = 0; i < mTokens_.length; i++) {
+        for (uint i = 0; i < underlyings_.length; i++) {
             tokenConfigs[underlyings_[i]] = TokenConfig({
                 underlyingAssetOracle: ChainlinkOracleInterface(mTokenOracles_[i]),
                 baseUnit: baseUnits_[i],
                 priceSource: priceSources_[i],
                 fixedPrice: fixedPrices_[i]
-            });
-            mUnderlyings[mTokens_[i]] = MUnderlyingConfig({underlying: underlyings_[i], 
-                isETH: isETHs_[i], 
-                isBuilt: true
             });
         }
     }
@@ -94,7 +88,7 @@ contract SimpleMomaPriceOracleV1 {
 
     // price 1e8
     function getPrice(address underlyingAsset) public view returns(uint) {
-        TokenConfig memory targetTokenConfig = tokenConfigs[underlyingAsset];
+        TokenConfig storage targetTokenConfig = tokenConfigs[underlyingAsset];
         ChainlinkOracleInterface targetOracle = targetTokenConfig.underlyingAssetOracle;
         require(targetOracle != ChainlinkOracleInterface(address(0)), "Not Supported");
         (,int256 price,,,) = targetOracle.latestRoundData();

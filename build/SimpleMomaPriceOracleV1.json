@@ -1,0 +1,249 @@
+{
+    "abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "guardian_",
+					"type": "address"
+				},
+				{
+					"internalType": "contract ChainlinkOracleInterface",
+					"name": "ethOracle_",
+					"type": "address"
+				},
+				{
+					"internalType": "address[]",
+					"name": "underlyings_",
+					"type": "address[]"
+				},
+				{
+					"internalType": "address[]",
+					"name": "mTokenOracles_",
+					"type": "address[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "baseUnits_",
+					"type": "uint256[]"
+				},
+				{
+					"internalType": "enum SimpleMomaPriceOracleV1.PriceSource[]",
+					"name": "priceSources_",
+					"type": "uint8[]"
+				},
+				{
+					"internalType": "uint256[]",
+					"name": "fixedPrices_",
+					"type": "uint256[]"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "mToken",
+					"type": "address"
+				}
+			],
+			"name": "assetPrices",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "ethBaseUnit",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "ethFixedPrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "ethOracle",
+			"outputs": [
+				{
+					"internalType": "contract ChainlinkOracleInterface",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "underlyingAsset",
+					"type": "address"
+				}
+			],
+			"name": "getPrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "guardian",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "mUnderlyings",
+			"outputs": [
+				{
+					"internalType": "address",
+					"name": "underlying",
+					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "isETH",
+					"type": "bool"
+				},
+				{
+					"internalType": "bool",
+					"name": "isBuilt",
+					"type": "bool"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "contract IMToken",
+					"name": "mToken",
+					"type": "address"
+				},
+				{
+					"internalType": "bool",
+					"name": "isETH_",
+					"type": "bool"
+				}
+			],
+			"name": "setNewMUnderlying",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "oracle_",
+					"type": "address"
+				},
+				{
+					"internalType": "address",
+					"name": "underlying_",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "baseUnit_",
+					"type": "uint256"
+				},
+				{
+					"internalType": "enum SimpleMomaPriceOracleV1.PriceSource",
+					"name": "priceSource_",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "fixedPrice_",
+					"type": "uint256"
+				}
+			],
+			"name": "setNewOracle",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"name": "tokenConfigs",
+			"outputs": [
+				{
+					"internalType": "contract ChainlinkOracleInterface",
+					"name": "underlyingAssetOracle",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "baseUnit",
+					"type": "uint256"
+				},
+				{
+					"internalType": "enum SimpleMomaPriceOracleV1.PriceSource",
+					"name": "priceSource",
+					"type": "uint8"
+				},
+				{
+					"internalType": "uint256",
+					"name": "fixedPrice",
+					"type": "uint256"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		}
+	]
+}
