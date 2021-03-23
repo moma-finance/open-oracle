@@ -21,7 +21,7 @@
 |---|---|---|
 |underlyingPrice|uint|去精度因素价格|
 
-## SimpleMomaProiceOracleV1
+## SimpleMomaPriceOracleV1
 * 功能描述：
   + 维护mToken对chainlink的对应关系，并集合chainlink多交易对报价；
 
