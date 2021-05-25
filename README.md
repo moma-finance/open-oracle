@@ -21,7 +21,7 @@
 |---|---|---|
 |underlyingPrice|uint|去精度因素价格|
 
-## SimpleMomaPriceOracleV1
+## MomaPriceOracleView
 * 功能描述：
   + 维护mToken对chainlink的对应关系，并集合chainlink多交易对报价；
 
@@ -55,7 +55,28 @@
 
 |参数名称|参数类型|说明|
 |---|---|---|
-|price|uint|去精度因素价格|
+|roundId|uint80|当前价格轮次(chainlink params)|
+|price|uint256|价格(chainlink params)|
+|startedAt|uint256|当前轮次开启时间(chainlink params)|
+|updatedAt|uint256|当前轮次最新更新时间(chainlink params)|
+
+#### 3. price:
+* 功能描述：通过资产symbol获取指定资产价格（8位精度）；
+* 入参：
+  
+|参数名称|参数类型|说明|
+|---|---|---|
+|symbol_|string|待查询资产symbol|
+
+* 返回值：
+
+|参数名称|参数类型|说明|
+|---|---|---|
+|roundId|uint80|当前价格轮次(chainlink params)|
+|price|uint256|价格(chainlink params)|
+|startedAt|uint256|当前轮次开启时间(chainlink params)|
+|updatedAt|uint256|当前轮次最新更新时间(chainlink params)|
+
 
 ### Change State Func：
 #### 1. setNewOracle:
@@ -70,7 +91,7 @@
 |priceSource_|uint256|价格源标记（0：FIXED_ETH、1：FIXED_USD、2、REPORTER）|
 |fixedPrice_|uint256|固定价格，当原生资产为非固定价格时置空|
 
-#### 2. setNewOracle:
+#### 2. setNewMUnderlying:
 * 功能描述：绑定mToken至已有原生资产oracle；
 * 入参：
 
@@ -78,3 +99,12 @@
 |---|---|---|
 |mToken|address|新增mToken合约地址|
 |isETH_|bool|新增mToken的原生资产是否为ETH|
+
+#### 3. setNewSymbolHash:
+* 功能描述：添加新的原生资产；
+* 入参：
+|参数名称|参数类型|说明|
+|---|---|---|
+|symbol_|address|新增原生资产symbol|
+|oracle_|address|新增原生资产对应的chainlink Oracle地址|
+
