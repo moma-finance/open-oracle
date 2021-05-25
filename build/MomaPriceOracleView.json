@@ -19,7 +19,7 @@
 				},
 				{
 					"internalType": "address[]",
-					"name": "mTokenOracles_",
+					"name": "oracles_",
 					"type": "address[]"
 				},
 				{
@@ -41,29 +41,15 @@
 					"internalType": "string[]",
 					"name": "symbols_",
 					"type": "string[]"
+				},
+				{
+					"internalType": "contract IMomaFactory",
+					"name": "momaFactory_",
+					"type": "address"
 				}
 			],
 			"stateMutability": "nonpayable",
 			"type": "constructor"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "address",
-					"name": "mToken",
-					"type": "address"
-				}
-			],
-			"name": "assetPrices",
-			"outputs": [
-				{
-					"internalType": "uint256",
-					"name": "",
-					"type": "uint256"
-				}
-			],
-			"stateMutability": "view",
-			"type": "function"
 		},
 		{
 			"inputs": [],
@@ -133,11 +119,25 @@
 					"internalType": "uint256",
 					"name": "updatedAt",
 					"type": "uint256"
-				},
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [
 				{
-					"internalType": "uint80",
-					"name": "answeredInRound",
-					"type": "uint80"
+					"internalType": "address",
+					"name": "mToken",
+					"type": "address"
+				}
+			],
+			"name": "getUnderlyingPrice",
+			"outputs": [
+				{
+					"internalType": "uint256",
+					"name": "",
+					"type": "uint256"
 				}
 			],
 			"stateMutability": "view",
@@ -151,6 +151,19 @@
 					"internalType": "address",
 					"name": "",
 					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"inputs": [],
+			"name": "isPriceOracle",
+			"outputs": [
+				{
+					"internalType": "bool",
+					"name": "",
+					"type": "bool"
 				}
 			],
 			"stateMutability": "view",
@@ -186,6 +199,19 @@
 			"type": "function"
 		},
 		{
+			"inputs": [],
+			"name": "momaFactory",
+			"outputs": [
+				{
+					"internalType": "contract IMomaFactory",
+					"name": "",
+					"type": "address"
+				}
+			],
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
 			"inputs": [
 				{
 					"internalType": "string",
@@ -214,11 +240,6 @@
 					"internalType": "uint256",
 					"name": "updatedAt",
 					"type": "uint256"
-				},
-				{
-					"internalType": "uint80",
-					"name": "answeredInRound",
-					"type": "uint80"
 				}
 			],
 			"stateMutability": "view",
@@ -230,11 +251,6 @@
 					"internalType": "contract IMToken",
 					"name": "mToken",
 					"type": "address"
-				},
-				{
-					"internalType": "bool",
-					"name": "isETH_",
-					"type": "bool"
 				}
 			],
 			"name": "setNewMUnderlying",
@@ -276,24 +292,6 @@
 				}
 			],
 			"name": "setNewOracle",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		},
-		{
-			"inputs": [
-				{
-					"internalType": "string",
-					"name": "symbol_",
-					"type": "string"
-				},
-				{
-					"internalType": "address",
-					"name": "oracle_",
-					"type": "address"
-				}
-			],
-			"name": "setNewSymbolHash",
 			"outputs": [],
 			"stateMutability": "nonpayable",
 			"type": "function"
