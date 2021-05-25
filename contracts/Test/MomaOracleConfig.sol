@@ -15,8 +15,17 @@ interface IMToken {
     function underlying() external view returns (address);
 }
 
+interface IMomaFactory {
+    function isCodeSame(address a, address b) external view returns (bool);
+    function mErc20() external view returns (address);
+    function mEther() external view returns (address);
+}
+
 contract MomaOracleConfig {
     address public guardian;
+
+    IMomaFactory public momaFactory;
+
     enum PriceSource {
         FIXED_ETH, /// implies the fixedPrice is a constant multiple of the ETH price (which varies)
         FIXED_USD, /// implies the fixedPrice is a constant multiple of the USD price (which is 1)
@@ -45,16 +54,6 @@ contract MomaOracleConfig {
     uint public constant ethBaseUnit = 1e18;
     uint public constant ethFixedPrice = 1e18;
 
-    function setNewSymbolHash(
-        string memory symbol_,
-        address oracle_
-    ) public {
-        bytes32 symbolHash_ = keccak256(abi.encodePacked(symbol_));
-        if (symbols[symbolHash_] == address(0)) {
-            symbols[symbolHash_] = oracle_;
-        }
-    }
-
     function setNewOracle(
         address oracle_,
         address underlying_,
@@ -64,37 +63,34 @@ contract MomaOracleConfig {
         string memory symbol_
     ) public {
         require(msg.sender == guardian, "Only guardian may add new price oracle");
+        bytes32 symbolHash_ = keccak256(abi.encodePacked(symbol_));
         tokenConfigs[underlying_] = TokenConfig({
                 underlyingAssetOracle: ChainlinkOracleInterface(oracle_),
                 baseUnit: baseUnit_,
                 priceSource: priceSource_,
                 fixedPrice: fixedPrice_,
-                symbolHash: keccak256(abi.encodePacked(symbol_))
+                symbolHash: symbolHash_
         });
+
+        if (symbols[symbolHash_] == address(0)) {
+            symbols[symbolHash_] = oracle_;
+        }
     }
 
-    function setNewMUnderlying(
-        IMToken mToken,
-        bool isETH_
-    ) public {
+    function setNewMUnderlying(IMToken mToken) public {
         MUnderlyingConfig storage newMUnderlyingPair = mUnderlyings[address(mToken)];
-        if (isETH_) {
+        if (momaFactory.isCodeSame(momaFactory.mEther(), address(mToken))) {
             newMUnderlyingPair.isBuilt = true;
             newMUnderlyingPair.isETH = true;
-        } else {
+        }
+
+        if (momaFactory.isCodeSame(momaFactory.mErc20(), address(mToken))) {
             address targetUnderlying = mToken.underlying();
             TokenConfig memory config = tokenConfigs[targetUnderlying];
             require(config.underlyingAssetOracle != ChainlinkOracleInterface(address(0)), "Not Supported Underlying");
             newMUnderlyingPair.underlying = targetUnderlying;
             newMUnderlyingPair.isBuilt = true;
         }
-    }
 
-
-    function mul(uint a, uint b) internal pure returns (uint) {
-        if (a == 0) return 0;
-        uint c = a * b;
-        require(c / a == b, "multiplication overflow");
-        return c;
     }
 }
