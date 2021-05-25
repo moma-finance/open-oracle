@@ -98,7 +98,7 @@ contract MomaPriceOracleView is MomaOracleConfig {
     function priceInternal(TokenConfig memory tokenConfig) internal view returns (uint) {
         if (tokenConfig.priceSource == PriceSource.REPORTER) {
             ChainlinkOracleInterface targetOracle = tokenConfig.underlyingAssetOracle;
-            if (targetOracle != ChainlinkOracleInterface(address(0))) {
+            if (targetOracle == ChainlinkOracleInterface(address(0))) {
                 return uint(0);
             }
             (,int256 price,,,) = targetOracle.latestRoundData();

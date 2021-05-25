@@ -79,18 +79,21 @@ contract MomaOracleConfig {
 
     function setNewMUnderlying(IMToken mToken) public {
         MUnderlyingConfig storage newMUnderlyingPair = mUnderlyings[address(mToken)];
-        if (momaFactory.isCodeSame(momaFactory.mEther(), address(mToken))) {
-            newMUnderlyingPair.isBuilt = true;
-            newMUnderlyingPair.isETH = true;
-        }
-
         if (momaFactory.isCodeSame(momaFactory.mErc20(), address(mToken))) {
             address targetUnderlying = mToken.underlying();
             TokenConfig memory config = tokenConfigs[targetUnderlying];
             require(config.underlyingAssetOracle != ChainlinkOracleInterface(address(0)), "Not Supported Underlying");
             newMUnderlyingPair.underlying = targetUnderlying;
             newMUnderlyingPair.isBuilt = true;
-        }
+        } else if (momaFactory.isCodeSame(momaFactory.mEther(), address(mToken))) {
+            newMUnderlyingPair.isBuilt = true;
+            newMUnderlyingPair.isETH = true;
+        } 
+    }
 
+    function setNewMUnderlyings(IMToken[] mToken) public {
+        for(uint i; i < mToken.length(); i++) {
+            setNewMUnderlying(mToken);
+        }
     }
 }
