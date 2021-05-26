@@ -1,4 +1,4 @@
-pragma solidity ^0.7.0;
+pragma solidity 0.7.0;
 pragma experimental ABIEncoderV2;
 
 interface ChainlinkOracleInterface {
@@ -91,9 +91,9 @@ contract MomaOracleConfig {
         } 
     }
 
-    function setNewMUnderlyings(IMToken[] mToken) public {
-        for(uint i; i < mToken.length; i++) {
-            setNewMUnderlying(mToken);
+    function setNewMUnderlyings(IMToken[] memory mTokens) public {
+        for(uint i; i < mTokens.length; i++) {
+            setNewMUnderlying(mTokens[i]);
         }
     }
 }
