@@ -92,7 +92,7 @@ contract MomaOracleConfig {
     }
 
     function setNewMUnderlyings(IMToken[] mToken) public {
-        for(uint i; i < mToken.length(); i++) {
+        for(uint i; i < mToken.length; i++) {
             setNewMUnderlying(mToken);
         }
     }
