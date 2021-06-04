@@ -21,6 +21,10 @@ contract MomaPriceOracleView is MomaOracleConfig {
         IMomaFactory momaFactory_
     ) {
         // USDC、USDT 1e8
+        require(guardian_ != address(0), "guardian_ is a zero address");
+        require(address(ethOracle_) != address(0), "ethOracle_ is a zero address");
+        require(address(momaFactory_) != address(0), "momaFactory_ is a zero address");
+        
         guardian = guardian_;
         ethOracle = ethOracle_;
         momaFactory = momaFactory_;
