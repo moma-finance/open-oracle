@@ -54,6 +54,11 @@ contract MomaOracleConfig {
     uint public constant ethBaseUnit = 1e18;
     uint public constant ethFixedPrice = 1e18;
 
+    function setNewGuardian(address guardian_) public {
+        require(msg.sender == guardian, "Only guardian");
+        guardian = guardian_;
+    }
+    
     function setNewOracle(
         address oracle_,
         address underlying_,
