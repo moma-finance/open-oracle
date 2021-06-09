@@ -4,7 +4,21 @@
   + 维护mToken对chainlink的对应关系，并集合chainlink多交易对报价；
 
 * Contract Address:
-  + Rinkeby: 0x7BE5d3f7A52a4470871B19F3c0dae2FD59f8c19A
+  + Rinkeby: 0x6a59E5c3c51FC35aC209b941b20E403B8B8255C4
+
+* Underlying Assets:
+  + BTC:
+    - symbol: BTC
+    - address: 0x577d296678535e4903d59a4c929b718e1d575e0a
+  + ETH:
+    - symbol: ETH
+    - address: 0xc778417E063141139Fce010982780140Aa0cD5Ab
+  + DAI:
+    - symbol: DAI
+    - address: 0xc7ad46e0b8a400bb3c915120d284aafba8fc4735
+  + USDC:
+    - symbol: USDC
+    - address: 0xeb8f08a975Ab53E34D8a0330E0D34de942C95926             
 
 ### View Func：
 #### 1. getUnderlyingPrice:
