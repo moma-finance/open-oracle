@@ -471,6 +471,14 @@ const oracle_configs = [
         priceSource: "2",
         fixedPrice: "0",
     },
+    { 
+        symbol: "WBTC", 
+        tokenAddr: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", 
+        oracleAddr: "0xF4030086522a5bEEa4988F8cA5B36dbC97BeE88c",
+        baseUnit: "100000000",
+        priceSource: "2",
+        fixedPrice: "0",
+    },
 ];
 
 module.exports = {
